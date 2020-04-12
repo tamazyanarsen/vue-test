@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <notes :notes="notes"/>
+        <notes :items="notes"/>
     </div>
 </template>
 

@@ -9,11 +9,12 @@
                     @click="editNote(selectedNoteId)">edit
             </button>
             <button class="material-icons"
+                    :disabled="!selectedNoteId"
                     @click="deleteNote">delete
             </button>
         </div>
         <h1>Заметки</h1>
-        <list :items="notes">
+        <list :items="items">
             <template v-slot:item-template="note">
                 <div class="note"
                      :class="{'note-selected': note.item.id === selectedNoteId}"
@@ -44,6 +45,7 @@
 <script>
     import NoteEdit from "@/components/NoteEdit";
     import List from "@/components/List";
+    import { notes } from '../storage/NotesData';
 
     export default {
         name: 'Notes',
@@ -55,7 +57,7 @@
             };
         },
         props: {
-            notes: Array
+            items: Array
         },
         methods: {
             selectNote(note) {
@@ -66,7 +68,8 @@
                 this.noteEditVisible = true;
             },
             deleteNote() {
-
+                notes.splice(notes.findIndex(e => e.id === this.selectedNoteId), 1);
+                this.selectedNoteId = null;
             }
         }
     }
@@ -78,11 +81,12 @@
     }
 
     .note {
-        border: cornflowerblue solid 3px;
+        border: cornflowerblue solid 2px;
         margin: 1%;
+        padding: 1%;
     }
 
     .note-selected {
-        border: brown solid 3px;
+        border: brown solid 4px;
     }
 </style>
