@@ -1,7 +1,9 @@
+import { getRandomNumber } from "@/utils/utils";
+
 export class Todo {
-    constructor(active = true, text = '') {
-        this.active = active;
-        this.text = text;
-        this.id = new Date().getTime();
+    constructor(text = '', active = true) {
+        this.text = String(text);
+        this.active = Boolean(active);
+        this.id = new Date().getTime().toString() + getRandomNumber();
     }
 }

@@ -1,27 +1,29 @@
 <template>
     <div id="app">
-        <notes/>
+        <notes :notes="notes"/>
     </div>
 </template>
 
 <script>
     import Notes from './components/Notes.vue'
+    import { notes } from "@/storage/NotesData";
 
     export default {
         name: 'App',
         components: {
             Notes
+        },
+        data: function () {
+            return {
+                notes: notes
+            };
         }
     }
 </script>
 
 <style>
     #app {
-        font-family: Avenir, Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-align: center;
-        color: #2c3e50;
-        margin-top: 60px;
+        margin-top: 5%;
+        margin-left: 5%;
     }
 </style>
