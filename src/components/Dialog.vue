@@ -10,10 +10,12 @@
                 </button>
             </div>
         </div>
-        <p class="body">
+        <div class="body">
             <slot name="form"/>
+        </div>
+        <div class="confirm">
             <slot name="confirm"/>
-        </p>
+        </div>
     </div>
 </template>
 
@@ -32,13 +34,13 @@
         left: 10%;
         top: 10%;
         z-index: 1000;
-        height: 80vh;
+        height: auto;
         width: 80%;
     }
 
     .caption {
         width: 100%;
-        height: 10%;
+        height: 15vh;
     }
 
     .title {

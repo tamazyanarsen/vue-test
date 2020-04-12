@@ -10,11 +10,11 @@
             </button>
             <button class="material-icons"
                     :disabled="!selectedNoteId"
-                    @click="deleteNote">delete
+                    @click="confirmVisible=true">delete
             </button>
         </div>
         <h1>Заметки</h1>
-        <list :items="items">
+        <list :items="notes">
             <template v-slot:item-template="note">
                 <div class="note"
                      :class="{'note-selected': note.item.id === selectedNoteId}"
@@ -36,28 +36,36 @@
                 </div>
             </template>
         </list>
-        <note-edit :note-id="selectedNoteId"
-                   v-if="noteEditVisible"
-                   @close="noteEditVisible=false"/>
+        <confirm v-if="confirmVisible">
+            <template v-slot:title>
+                Подтвердите удаление
+            </template>
+            <template v-slot:confirm>
+                <button class="confirm-button"
+                        @click="confirmVisible=false">Отменить
+                </button>
+                <button class="confirm-button"
+                        @click="deleteNote">Удалить
+                </button>
+            </template>
+        </confirm>
     </div>
 </template>
 
 <script>
-    import NoteEdit from "@/components/NoteEdit";
     import List from "@/components/List";
     import { notes } from '../storage/NotesData';
+    import Confirm from "@/components/Dialog";
 
     export default {
         name: 'Notes',
-        components: { List, NoteEdit },
+        components: { Confirm, List },
         data: function () {
             return {
                 selectedNoteId: null,
-                noteEditVisible: false
+                notes: notes || [],
+                confirmVisible: false
             };
-        },
-        props: {
-            items: Array
         },
         methods: {
             selectNote(note) {
@@ -65,10 +73,11 @@
             },
             editNote(noteId = this.selectedNoteId) {
                 this.selectedNoteId = noteId;
-                this.noteEditVisible = true;
+                this.$router.push(`/${this.selectedNoteId}`);
             },
             deleteNote() {
-                notes.splice(notes.findIndex(e => e.id === this.selectedNoteId), 1);
+                this.confirmVisible = false;
+                this.notes.splice(this.notes.findIndex(e => e.id === this.selectedNoteId), 1);
                 this.selectedNoteId = null;
             }
         }
@@ -88,5 +97,9 @@
 
     .note-selected {
         border: brown solid 4px;
+    }
+
+    .confirm-button {
+        padding: 1%;
     }
 </style>

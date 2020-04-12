@@ -1,29 +1,21 @@
 <template>
     <div id="app">
-        <notes :items="notes"/>
+        <div id="nav">
+            <router-link to="/">Главная</router-link>
+        </div>
+        <router-view/>
     </div>
 </template>
 
-<script>
-    import Notes from './components/Notes.vue'
-    import { notes } from "@/storage/NotesData";
-
-    export default {
-        name: 'App',
-        components: {
-            Notes
-        },
-        data: function () {
-            return {
-                notes: notes
-            };
-        }
-    }
-</script>
-
 <style>
     #app {
-        margin-top: 5%;
-        margin-left: 5%;
+        font-family: Avenir, Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        color: #2c3e50;
+        margin: 5%;
     }
+  #nav{
+    margin: 1%;
+  }
 </style>
