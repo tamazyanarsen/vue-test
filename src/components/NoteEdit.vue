@@ -9,10 +9,27 @@
                       @submit.prevent="onSubmit">
                     <label>
                         Название заметки
-                        <textarea name="note_caption"
-                                  :v-model="note.caption"/>
+                        <input name="note_caption"
+                               v-model="note.caption"/>
                     </label>
-
+                    <div>
+                        <div v-for="todo in note.todoList"
+                             :key="todo.id"
+                             class="todo">
+                            <p>
+                                <label>
+                                    <input type="checkbox"
+                                           v-model="todo.done">
+                                </label>
+                                <label>
+                                    <input v-model="todo.text">
+                                </label>
+                                <button class="material-icons delete-todo"
+                                        @click="deleteTodo(todo.id)">close
+                                </button>
+                            </p>
+                        </div>
+                    </div>
                 </form>
             </div>
         </template>
@@ -41,10 +58,21 @@
         methods: {
             onSubmit: function () {
 
+            },
+            deleteTodo(todoId) {
+                this.note.todoList.splice(this.note.todoList.findIndex(e => e.id === todoId), 1);
             }
         }
     }
 </script>
 
 <style scoped>
+    .todo {
+        width: 20%;
+    }
+
+    .delete-todo {
+        float: right;
+        font-size: 10px;
+    }
 </style>

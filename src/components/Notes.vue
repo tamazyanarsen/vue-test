@@ -26,7 +26,7 @@
                                 <label>
                                     <input type="checkbox"
                                            disabled="disabled"
-                                           :checked="!todo.item.active">
+                                           :checked="todo.item.done">
                                     {{todo.item.text}}
                                 </label>
                             </div>
