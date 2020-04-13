@@ -36,35 +36,30 @@
                 </div>
             </template>
         </list>
-        <confirm v-if="confirmVisible">
-            <template v-slot:title>
-                Подтвердите удаление
-            </template>
-            <template v-slot:confirm>
-                <button class="confirm-button"
-                        @click="confirmVisible=false">Отменить
-                </button>
-                <button class="confirm-button"
-                        @click="deleteNote">Удалить
-                </button>
-            </template>
-        </confirm>
+
+        <confirm-dialog v-if="confirmVisible"
+                        title="Подтвердите удаление"
+                        :cancel-action="cancelAction"
+                        :apply-action="deleteNote"/>
     </div>
 </template>
 
 <script>
     import List from "@/components/List";
     import { notes } from '../storage/NotesData';
-    import Confirm from "@/components/Dialog";
+    import ConfirmDialog from "@/components/ConfirmDialog";
 
     export default {
         name: 'Notes',
-        components: { Confirm, List },
+        components: { ConfirmDialog, List },
         data: function () {
             return {
                 selectedNoteId: null,
                 notes: notes || [],
-                confirmVisible: false
+                confirmVisible: false,
+                cancelAction: () => {
+                    this.confirmVisible = false;
+                }
             };
         },
         methods: {
@@ -78,6 +73,7 @@
             deleteNote() {
                 this.confirmVisible = false;
                 this.notes.splice(this.notes.findIndex(e => e.id === this.selectedNoteId), 1);
+                localStorage.setItem('notes', JSON.stringify(notes));
                 this.selectedNoteId = null;
             }
         }

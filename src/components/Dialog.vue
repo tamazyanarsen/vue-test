@@ -2,7 +2,7 @@
     <div class="dialog">
         <div class="caption">
             <div class="title">
-                <slot name="title"/>
+                {{title}}
             </div>
             <div class="close-button">
                 <button class="material-icons"
@@ -14,14 +14,24 @@
             <slot name="form"/>
         </div>
         <div class="confirm">
-            <slot name="confirm"/>
+            <button class="confirm-button"
+                    @click="$emit('cancel')">{{cancelText}}
+            </button>
+            <button class="confirm-button"
+                    @click="$emit('apply')">{{applyText}}
+            </button>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "Dialog"
+        name: "Dialog",
+        props: {
+            cancelText: {type: String, default: 'Отмена'},
+            applyText: {type: String, default: 'OK'},
+            title: String
+        }
     }
 </script>
 
@@ -48,7 +58,7 @@
         padding-left: 1%;
     }
 
-    .body{
+    .body {
         margin: 1%;
     }
 

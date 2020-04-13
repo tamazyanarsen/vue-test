@@ -6,7 +6,7 @@
                     <h3>{{title}}</h3>
                 </div>
                 <div style="display: inline-block; margin-left: 1%">
-                    <button @click="deleteNote">Удалить заметку</button>
+                    <button @click="showDeleteConfirm">Удалить заметку</button>
                 </div>
             </div>
         </div>
@@ -45,11 +45,19 @@
                     <br>
                     <button type="button"
                             class="form-button"
-                            @click.prevent="$emit('close')">Отменить редактирование
+                            @click.prevent="showConfirmCancel">Отменить редактирование
                     </button>
                     <button type="button"
                             class="form-button"
-                            @click.prevent="submitForm">Сохранить
+                            @click.prevent="submitForm">Сохранить изменения
+                    </button>
+                    <button type="button"
+                            class="form-button"
+                            @click.prevent="cancelChanges">Отменить внесенные изменения
+                    </button>
+                    <button type="button"
+                            class="form-button"
+                            @click.prevent="doCancelChanges">Повторить отмененные изменения
                     </button>
                 </form>
                 <br>
@@ -62,6 +70,10 @@
                 </form>
             </div>
         </div>
+        <confirm-dialog v-if="confirmVisible"
+                        :title="confirmTitle"
+                        :cancel-action="cancelAction"
+                        :apply-action="applyAction"/>
     </div>
 </template>
 
@@ -69,25 +81,34 @@
     import { notes } from "@/storage/NotesData";
     import { Note } from "@/models/Note";
     import { Todo } from '@/models/Todo';
+    import ConfirmDialog from "@/components/ConfirmDialog";
 
     export default {
         name: "NoteEdit",
+        components: { ConfirmDialog },
         data: function () {
             return {
                 newTodo: new Todo(),
-                noteId: null
+                noteId: null,
+                confirmVisible: false,
+                confirmTitle: 'Подтвердите действие',
+                cancelAction: () => {
+                    this.confirmVisible = false;
+                },
+                applyAction: () => {
+                },
+                note: {}
             };
         },
         beforeMount() {
             this.noteId = this.$route.params.id === 'null' ? null : this.$route.params.id;
+
+            // делаем копию, чтобы изменения сразу не отображались в компоненте для вывода списка заметок
+            this.note = this.copyObject(notes.find(e => e.id === this.noteId) || new Note());
         },
         computed: {
             title: function () {
                 return this.noteId ? 'Редактирование заметки' : 'Новая заметка';
-            },
-            note: function () {
-                // делаем копию, чтобы изменения сразу не отображались в компоненте для вывода списка заметок
-                return this.copyObject(notes.find(e => e.id === this.noteId) || new Note());
             }
         },
         methods: {
@@ -113,7 +134,27 @@
             deleteNote() {
                 notes.splice(notes.findIndex(e => e.id === this.noteId), 1);
                 localStorage.setItem('notes', JSON.stringify(notes));
-                this.$emit('close');
+                this.$router.go(-1);
+            },
+            showDeleteConfirm() {
+                this.confirmTitle = 'Подтвердите удаление';
+                this.applyAction = this.deleteNote;
+                this.confirmVisible = true;
+            },
+            showConfirmCancel() {
+                const vm = this;
+                this.confirmTitle = 'Отменить редактирование';
+                this.applyAction = function () {
+                    vm.$router.go(-1);
+                };
+                this.confirmVisible = true;
+            },
+            doCancelChanges() {
+                this.note = this.oldNote;
+            },
+            cancelChanges() {
+                this.oldNote = this.note;
+                this.note = this.copyObject(notes.find(e => e.id === this.noteId) || new Note());
             }
         }
     }
